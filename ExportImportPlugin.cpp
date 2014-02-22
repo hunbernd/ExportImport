@@ -25,7 +25,7 @@ uint32_t RETROSHARE_PLUGIN_api = RS_PLUGIN_API_VERSION ;
 
 ExportImportPlugin::ExportImportPlugin()
 {
-    Q_INIT_RESOURCE(images);
+    Q_INIT_RESOURCE(ExportImport_images);
     mIcon = new QIcon(":/images/icon.png");
 }
 

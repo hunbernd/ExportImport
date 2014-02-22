@@ -19,4 +19,4 @@ FORMS += \
     ExportImportPage.ui
 
 RESOURCES += \
-    images.qrc
+    ExportImport_images.qrc
