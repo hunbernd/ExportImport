@@ -9,7 +9,7 @@ ExportImportManager::ExportImportManager(RsPeers* mPeers)
 }
 
 std::string ExportImportManager::exportJson(){
-    std::list<std::string> gpg_ids;
+    std::list<RsPgpId> gpg_ids;
     mPeers->getGPGAcceptedList(gpg_ids);
     //mPeers->getGPGAllList(gpg_ids);
 
@@ -25,8 +25,9 @@ std::string ExportImportManager::exportJson(){
         json_group["name"] = group_info.name;
         json_group["flag"] = group_info.flag;
         Json::Value json_peer_ids;
-        for(std::list<std::string>::iterator i = group_info.peerIds.begin(); i !=  group_info.peerIds.end(); i++){
-            json_peer_ids.append(*i);
+        for(std::list<RsPgpId>::iterator i = group_info.peerIds.begin(); i !=  group_info.peerIds.end(); i++){
+            std::string pid = i->toStdString();
+            json_peer_ids.append(pid);
         }
         json_group["peerIds"] = json_peer_ids;
         json_groups.append(json_group);
@@ -35,22 +36,23 @@ std::string ExportImportManager::exportJson(){
 
     Json::Value json_gpg_ids;
     RsPeerDetails gpg_detail;
-    for(std::list<std::string>::iterator list_iter = gpg_ids.begin(); list_iter !=  gpg_ids.end(); list_iter++)
+    for(std::list<RsPgpId>::iterator list_iter = gpg_ids.begin(); list_iter !=  gpg_ids.end(); list_iter++)
     {
         mPeers->getGPGDetails(*list_iter, gpg_detail);
         Json::Value json_gpg_id;
         //json_gpg_id["id"] = gpg_detail.id;
         json_gpg_id["name"] = gpg_detail.name;
-        json_gpg_id["gpg_id"] = gpg_detail.gpg_id;
+        std::string gid = gpg_detail.gpg_id.toStdString();
+        json_gpg_id["gpg_id"] = gid;
         json_gpg_id["email"] = gpg_detail.email;
         json_gpg_id["trustLvl"] = gpg_detail.trustLvl;
         //json_gpg_id["validLvl"] = gpg_detail.validLvl;
         //json_gpg_id["location"] = gpg_detail.location;
         //json_gpg_id["service_perm_flags"] = gpg_detail.service_perm_flags.toUInt32();
-        std::list<std::string> ssl_ids;
+        std::list<RsPeerId> ssl_ids;
         mPeers->getAssociatedSSLIds(*list_iter, ssl_ids);
         Json::Value json_ssl_ids;
-        for(std::list<std::string>::iterator list_iter = ssl_ids.begin(); list_iter !=  ssl_ids.end(); list_iter++)
+        for(std::list<RsPeerId>::iterator list_iter = ssl_ids.begin(); list_iter !=  ssl_ids.end(); list_iter++)
         {
             RsPeerDetails detail;
             if (!mPeers->getPeerDetails(*list_iter, detail))
@@ -59,10 +61,11 @@ std::string ExportImportManager::exportJson(){
                 return NULL;
             }
             //std::string invite = mPeers->GetRetroshareInvite(detail.id,ui._shouldAddSignatures_CB->isChecked(),ui._useOldFormat_CB->isChecked()) ; // this needs to be a SSL id
-            std::string invite = mPeers->GetRetroshareInvite(detail.id,true,false) ; // this needs to be a SSL id
+            std::string invite = mPeers->GetRetroshareInvite(detail.id,true) ; // this needs to be a SSL id
 
             Json::Value json_ssl_id;
-            json_ssl_id["id"] = detail.id.c_str();
+            std::string sid = detail.id.toStdString();
+            json_ssl_id["id"] = sid;
             json_ssl_id["location"] = detail.location;
             json_ssl_id["pubkey"] = invite.c_str();
             json_ssl_id["service_perm_flags"] = detail.service_perm_flags.toUInt32();
@@ -100,19 +103,21 @@ uint32_t cert_error_code;
 std::string haha;
                 RsPeerDetails peerDetails;
                 if (mPeers->loadDetailsFromStringCert(certStr, peerDetails, cert_error_code)) {
-                    std::string ssl_id, pgp_id ;
+                    RsPeerId ssl_id;
+                    RsPgpId pgp_id;
                     if(!mPeers->loadCertificateFromString(certStr,ssl_id,pgp_id, haha))
                     {
                         std::cerr << "ConnectFriendWizard::accept(): cannot load that certificate." << std::endl;
                     } else {
                         ServicePermissionFlags service_perm_flags(json_ssl_id["service_perm_flags"].asUInt());
-                        if (!peerDetails.gpg_id.empty()) {
+                        if (!peerDetails.gpg_id.isNull()) {
 
-                            std::cerr << "ConclusionPage::validatePage() accepting GPG key for connection." << std::endl;
-                            mPeers->addFriend("", peerDetails.gpg_id, service_perm_flags);
+                            std::cerr << "ConclusionPage::validatePage() accepting GPG key for connection." << std::endl;                            
+                            RsPeerId pid;
+                            mPeers->addFriend(pid, peerDetails.gpg_id, service_perm_flags);
                         }
 
-                        if (peerDetails.id != "") {
+                        if (!peerDetails.id.isNull()) {
                             mPeers->addFriend(peerDetails.id, peerDetails.gpg_id, service_perm_flags) ;
 
                             //let's check if there is ip adresses in the wizard.
@@ -140,7 +145,8 @@ std::string haha;
                     //setField("errorMessage", QString(tr("Certificate Load Failed:something is wrong with %1 ")).arg(fn) + ": " + getErrorString(cert_error_code));
                 }
             }
-            mPeers->trustGPGCertificate(gpg_id["gpg_id"].asString(), gpg_id["trustLvl"].asUInt());
+            RsPgpId gid(gpg_id["gpg_id"].asString());
+            mPeers->trustGPGCertificate(gid, gpg_id["trustLvl"].asUInt());
         }
         if(this->import_groups){
             Json::Value json_groups = root["groups"];
@@ -157,8 +163,8 @@ std::string haha;
                         mPeers->addGroup(groupInfo);
                     }
                     foreach(const Json::Value& json_peer, json_peers){
-                        mPeers->assignPeerToGroup(groupId, json_peer.asString(), true);
-
+                        RsPgpId pid(json_peer.asString());
+                        mPeers->assignPeerToGroup(groupId, pid, true);
                     }
                 }
             }
