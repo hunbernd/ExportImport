@@ -14,11 +14,9 @@ public:
     ExportImportPage(RsPeers* mPeers, QWidget* parent = 0, Qt::WFlags flags = 0);
     ~ExportImportPage();
     void load(){}
-    bool save(QString& str){return true;}
-    QString pageName()const{
-        return "ExportTools";
-    }
-    QPixmap iconPixmap() const { return QPixmap(":/images/encrypted32.png") ; }
+	bool save(QString& str) {return true;}
+    QString pageName() const { return "ExportTools";  }
+    QIcon iconPixmap() const { return QIcon(":/images/encrypted32.png") ; }
 private:
     /** Qt Designer generated object */
     Ui::ExportPage ui;

@@ -5,22 +5,31 @@
 //static void *inited = new ExportToolsPlugin() ;
 
 extern "C" {
-void *RETROSHARE_PLUGIN_provide()
-{
-    static ExportImportPlugin* p = new ExportImportPlugin() ;
-    return (void*)p ;
-}
-// This symbol contains the svn revision number grabbed from the executable.
-// It will be tested by RS to load the plugin automatically, since it is safe to load plugins
-// with same revision numbers, assuming that the revision numbers are up-to-date.
-//
-uint32_t RETROSHARE_PLUGIN_revision = RsUtil::retroshareRevision() ;
+#ifdef WIN32
+    __declspec(dllexport)
+#endif
+    void *RETROSHARE_PLUGIN_provide()
+    {
+        static ExportImportPlugin* p = new ExportImportPlugin() ;
+        return (void*)p ;
+    }
+    // This symbol contains the svn revision number grabbed from the executable.
+    // It will be tested by RS to load the plugin automatically, since it is safe to load plugins
+    // with same revision numbers, assuming that the revision numbers are up-to-date.
+    //
+#ifdef WIN32
+    __declspec(dllexport)
+#endif
+    uint32_t RETROSHARE_PLUGIN_revision = RS_REVISION_NUMBER;
 
-// This symbol contains the svn revision number grabbed from the executable.
-// It will be tested by RS to load the plugin automatically, since it is safe to load plugins
-// with same revision numbers, assuming that the revision numbers are up-to-date.
-//
-uint32_t RETROSHARE_PLUGIN_api = RS_PLUGIN_API_VERSION ;
+    // This symbol contains the svn revision number grabbed from the executable.
+    // It will be tested by RS to load the plugin automatically, since it is safe to load plugins
+    // with same revision numbers, assuming that the revision numbers are up-to-date.
+    //
+#ifdef WIN32
+    __declspec(dllexport)
+#endif
+    uint32_t RETROSHARE_PLUGIN_api = RS_PLUGIN_API_VERSION ;
 }
 
 ExportImportPlugin::ExportImportPlugin()
@@ -68,10 +77,11 @@ std::string ExportImportPlugin::getShortPluginDescription() const{
 std::string ExportImportPlugin::getPluginName() const {
     return "ExportImport";
 }
-void ExportImportPlugin::getPluginVersion(int& major,int& minor,int& svn_rev) const{
-    major = 0;
-    minor = 0;
-    svn_rev = RsUtil::retroshareRevision() ;
+void ExportImportPlugin::getPluginVersion(int& major, int& minor, int &build, int& svn_rev) const{
+    major = RS_MAJOR_VERSION;
+    minor = RS_MINOR_VERSION;
+    build = RS_BUILD_NUMBER;
+    svn_rev = RS_REVISION_NUMBER;
 }
 
 //
