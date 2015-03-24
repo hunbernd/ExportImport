@@ -19,6 +19,9 @@ ExportImportPage::ExportImportPage(RsPeers* mPeers, QWidget* parent, Qt::WindowF
 
     connect(ui.importDirButton, SIGNAL(clicked()), this, SLOT(setImportFile()));
     connect(ui.exportDirButton, SIGNAL(clicked()), this, SLOT(setExportFile()));
+
+    connect(ui.pb_export, SIGNAL(clicked()), this, SLOT(exportKeysToTxt()));
+    connect(ui.pb_import, SIGNAL(clicked()), this, SLOT(importKeysFromTxt()));
 }
 
 ExportImportPage::~ExportImportPage(){}
@@ -87,4 +90,18 @@ void ExportImportPage::setExportFile()
     if(!qdir.isEmpty()){
         exportKeys();
     }
+}
+
+void ExportImportPage::exportKeysToTxt()
+{
+    ui.pte_text->clear();
+    ExportImportManager eip(mPeers);
+    ui.pte_text->appendPlainText(QString::fromUtf8(eip.exportJson().c_str()));
+}
+
+void ExportImportPage::importKeysFromTxt()
+{
+    ExportImportManager eip(mPeers);
+    eip.importData(ui.pte_text->toPlainText().toStdString());
+    ui.pte_text->clear();
 }

@@ -28,6 +28,8 @@ private:
 private slots:
     void setImportFile();
     void setExportFile();
+    void exportKeysToTxt();
+    void importKeysFromTxt();
 
 };
 
