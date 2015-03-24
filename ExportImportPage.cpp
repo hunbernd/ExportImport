@@ -9,7 +9,7 @@
 //#define DEBUG
 #define SEPARATOR ";"
 
-ExportImportPage::ExportImportPage(RsPeers* mPeers, QWidget* parent, Qt::WFlags flags)
+ExportImportPage::ExportImportPage(RsPeers* mPeers, QWidget* parent, Qt::WindowFlags flags)
     : MainPage(parent, flags)
 {
     this->mPeers = mPeers;

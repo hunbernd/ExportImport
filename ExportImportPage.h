@@ -11,10 +11,10 @@ class ExportImportPage : public MainPage
     Q_OBJECT
     
 public:
-    ExportImportPage(RsPeers* mPeers, QWidget* parent = 0, Qt::WFlags flags = 0);
+    ExportImportPage(RsPeers* mPeers, QWidget* parent = 0, Qt::WindowFlags flags = 0);
     ~ExportImportPage();
     void load(){}
-	bool save(QString& str) {return true;}
+    bool save(QString /*&str*/) {return true;}
     QString pageName() const { return "ExportTools";  }
     QIcon iconPixmap() const { return QIcon(":/images/encrypted32.png") ; }
 private:
