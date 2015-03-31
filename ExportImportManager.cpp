@@ -115,7 +115,7 @@ void ExportImportManager::importData(const std::string &certFileStr)
 
                             if(peerDetails.isHiddenNode) {
                                 if (!peerDetails.hiddenNodeAddress.empty() && peerDetails.hiddenNodePort) {
-                                    std::cerr << "ConnectFriendWizard::accept() : setting ip hidden address." << std::endl;
+                                    std::cerr << "ConnectFriendWizard::accept() : setting hidden address." << std::endl;
                                     mPeers->setHiddenNode(peerDetails.id, peerDetails.hiddenNodeAddress, peerDetails.hiddenNodePort);
                                 }
                             } else {
