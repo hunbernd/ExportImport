@@ -92,50 +92,50 @@ void ExportImportManager::importData(const std::string &certFileStr)
             Json::Value json_ssl_ids = gpg_id["ssl_ids"];
             foreach(const Json::Value& json_ssl_id, json_ssl_ids){
                 std::string certStr = json_ssl_id["pubkey"].asString();
-/*
-#if SVN_REVISION_NUMBER <= 5995
-                std::string
-#else
-                uint32_t
-#endif
-*/
-uint32_t cert_error_code;
-std::string haha;
+                uint32_t cert_error_code;
+                std::string haha;
                 RsPeerDetails peerDetails;
                 if (mPeers->loadDetailsFromStringCert(certStr, peerDetails, cert_error_code)) {
                     RsPeerId ssl_id;
                     RsPgpId pgp_id;
-                    if(!mPeers->loadCertificateFromString(certStr,ssl_id,pgp_id, haha))
+                    if(!mPeers->loadCertificateFromString(certStr, ssl_id, pgp_id, haha))
                     {
                         std::cerr << "ConnectFriendWizard::accept(): cannot load that certificate." << std::endl;
                     } else {
                         ServicePermissionFlags service_perm_flags(json_ssl_id["service_perm_flags"].asUInt());
                         if (!peerDetails.gpg_id.isNull()) {
 
-                            std::cerr << "ConclusionPage::validatePage() accepting GPG key for connection." << std::endl;                            
+                            std::cerr << "ConclusionPage::validatePage() accepting GPG key for connection." << std::endl;
                             RsPeerId pid;
                             mPeers->addFriend(pid, peerDetails.gpg_id, service_perm_flags);
                         }
 
                         if (!peerDetails.id.isNull()) {
-                            mPeers->addFriend(peerDetails.id, peerDetails.gpg_id, service_perm_flags) ;
+                            mPeers->addFriend(peerDetails.id, peerDetails.gpg_id, service_perm_flags);
 
-                            //let's check if there is ip adresses in the wizard.
-                            if (!peerDetails.extAddr.empty() && peerDetails.extPort) {
-                                std::cerr << "ConnectFriendWizard::accept() : setting ip ext address." << std::endl;
-                                mPeers->setExtAddress(peerDetails.id, peerDetails.extAddr, peerDetails.extPort);
-                            }
-                            if (!peerDetails.localAddr.empty() && peerDetails.localPort) {
-                                std::cerr << "ConnectFriendWizard::accept() : setting ip local address." << std::endl;
-                                mPeers->setLocalAddress(peerDetails.id, peerDetails.localAddr, peerDetails.localPort);
-                            }
-                            if (!peerDetails.dyndns.empty()) {
-                                std::cerr << "ConnectFriendWizard::accept() : setting DynDNS." << std::endl;
-                                mPeers->setDynDNS(peerDetails.id, peerDetails.dyndns);
-                            }
-                            if (!peerDetails.location.empty()) {
-                                std::cerr << "ConnectFriendWizard::accept() : setting peerLocation." << std::endl;
-                                mPeers->setLocation(peerDetails.id, peerDetails.location);
+                            if(peerDetails.isHiddenNode) {
+                                if (!peerDetails.hiddenNodeAddress.empty() && peerDetails.hiddenNodePort) {
+                                    std::cerr << "ConnectFriendWizard::accept() : setting ip hidden address." << std::endl;
+                                    mPeers->setHiddenNode(peerDetails.id, peerDetails.hiddenNodeAddress, peerDetails.hiddenNodePort);
+                                }
+                            } else {
+                                //let's check if there is ip adresses in the wizard.
+                                if (!peerDetails.extAddr.empty() && peerDetails.extPort) {
+                                    std::cerr << "ConnectFriendWizard::accept() : setting ip ext address." << std::endl;
+                                    mPeers->setExtAddress(peerDetails.id, peerDetails.extAddr, peerDetails.extPort);
+                                }
+                                if (!peerDetails.localAddr.empty() && peerDetails.localPort) {
+                                    std::cerr << "ConnectFriendWizard::accept() : setting ip local address." << std::endl;
+                                    mPeers->setLocalAddress(peerDetails.id, peerDetails.localAddr, peerDetails.localPort);
+                                }
+                                if (!peerDetails.dyndns.empty()) {
+                                    std::cerr << "ConnectFriendWizard::accept() : setting DynDNS." << std::endl;
+                                    mPeers->setDynDNS(peerDetails.id, peerDetails.dyndns);
+                                }
+                                if (!peerDetails.location.empty()) {
+                                    std::cerr << "ConnectFriendWizard::accept() : setting peerLocation." << std::endl;
+                                    mPeers->setLocation(peerDetails.id, peerDetails.location);
+                                }
                             }
                         }
 
