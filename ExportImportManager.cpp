@@ -25,7 +25,7 @@ std::string ExportImportManager::exportJson(){
         json_group["name"] = group_info.name;
         json_group["flag"] = group_info.flag;
         Json::Value json_peer_ids;
-        for(std::list<RsPgpId>::iterator i = group_info.peerIds.begin(); i !=  group_info.peerIds.end(); i++){
+        for(std::set<RsPgpId>::iterator i = group_info.peerIds.begin(); i !=  group_info.peerIds.end(); i++){
             std::string pid = i->toStdString();
             json_peer_ids.append(pid);
         }
