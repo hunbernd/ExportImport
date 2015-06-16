@@ -10,7 +10,9 @@ INCLUDEPATH += jsoncpp
 HEADERS += \
     ExportImportManager.h \
     ExportImportPlugin.h \
-    ExportImportPage.h
+    ExportImportPage.h \
+    jsoncpp/json/json.h \
+    jsoncpp/json/json-forwards.h
 
 HEADERS -= upnp/upnputil.h
 SOURCES -= upnp/upnputil.c

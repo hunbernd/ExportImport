@@ -8,10 +8,9 @@ extern "C" {
 #ifdef WIN32
     __declspec(dllexport)
 #endif
-    void *RETROSHARE_PLUGIN_provide()
+    RsPlugin *RETROSHARE_PLUGIN_provide()
     {
-        static ExportImportPlugin* p = new ExportImportPlugin() ;
-        return (void*)p ;
+        return new ExportImportPlugin();
     }
     // This symbol contains the svn revision number grabbed from the executable.
     // It will be tested by RS to load the plugin automatically, since it is safe to load plugins

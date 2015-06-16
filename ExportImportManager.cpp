@@ -93,24 +93,17 @@ void ExportImportManager::importData(const std::string &certFileStr)
             foreach(const Json::Value& json_ssl_id, json_ssl_ids){
                 std::string certStr = json_ssl_id["pubkey"].asString();
                 uint32_t cert_error_code;
-                std::string haha;
+                std::string errorStr;
                 RsPeerDetails peerDetails;
                 if (mPeers->loadDetailsFromStringCert(certStr, peerDetails, cert_error_code)) {
                     RsPeerId ssl_id;
                     RsPgpId pgp_id;
-                    if(!mPeers->loadCertificateFromString(certStr, ssl_id, pgp_id, haha))
+                    if(!mPeers->loadCertificateFromString(certStr, ssl_id, pgp_id, errorStr))
                     {
                         std::cerr << "ConnectFriendWizard::accept(): cannot load that certificate." << std::endl;
                     } else {
                         ServicePermissionFlags service_perm_flags(json_ssl_id["service_perm_flags"].asUInt());
-                        if (!peerDetails.gpg_id.isNull()) {
-
-                            std::cerr << "ConclusionPage::validatePage() accepting GPG key for connection." << std::endl;
-                            RsPeerId pid;
-                            mPeers->addFriend(pid, peerDetails.gpg_id, service_perm_flags);
-                        }
-
-                        if (!peerDetails.id.isNull()) {
+                        if (!peerDetails.id.isNull() && !peerDetails.gpg_id.isNull()) {
                             mPeers->addFriend(peerDetails.id, peerDetails.gpg_id, service_perm_flags);
 
                             if(peerDetails.isHiddenNode) {
@@ -137,6 +130,10 @@ void ExportImportManager::importData(const std::string &certFileStr)
                                     mPeers->setLocation(peerDetails.id, peerDetails.location);
                                 }
                             }
+                        } else if (!peerDetails.gpg_id.isNull()) {
+                            std::cerr << "ConclusionPage::validatePage() accepting GPG key for connection." << std::endl;
+                            RsPeerId pid;
+                            mPeers->addFriend(pid, peerDetails.gpg_id, service_perm_flags);
                         }
 
                         //rsicontrol->getNotify().notifyListChange(NOTIFY_LIST_NEIGHBOURS,1) ;
