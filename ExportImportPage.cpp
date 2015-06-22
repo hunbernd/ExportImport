@@ -2,6 +2,9 @@
 #include "ExportImportManager.h"
 #include "ui_ExportImportPage.h"
 #include "ExportImportPlugin.h"
+
+#include <retroshare-gui/RsAutoUpdatePage.h>
+
 #include <QMessageBox>
 #include <QFileDialog>
 #include <QTextStream>
@@ -102,6 +105,8 @@ void ExportImportPage::exportKeysToTxt()
 void ExportImportPage::importKeysFromTxt()
 {
     ExportImportManager eip(mPeers);
+    RsAutoUpdatePage::lockAllEvents();
     eip.importData(ui.pte_text->toPlainText().toStdString());
+    RsAutoUpdatePage::unlockAllEvents();
     ui.pte_text->clear();
 }
