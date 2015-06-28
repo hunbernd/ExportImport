@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>416</width>
-    <height>296</height>
+    <height>318</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -17,7 +17,7 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>10</y>
+     <y>170</y>
      <width>391</width>
      <height>67</height>
     </rect>
@@ -26,6 +26,13 @@
     <string>Export</string>
    </property>
    <layout class="QGridLayout">
+    <item row="0" column="0">
+     <widget class="QLineEdit" name="exportFilenameLine">
+      <property name="readOnly">
+       <bool>true</bool>
+      </property>
+     </widget>
+    </item>
     <item row="0" column="2">
      <widget class="QPushButton" name="exportDirButton">
       <property name="minimumSize">
@@ -58,20 +65,13 @@
       </property>
      </widget>
     </item>
-    <item row="0" column="0">
-     <widget class="QLineEdit" name="exportFilenameLine">
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QGroupBox" name="groupBox_4">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>80</y>
+     <y>240</y>
      <width>391</width>
      <height>67</height>
     </rect>
@@ -125,9 +125,9 @@
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>150</y>
+     <y>10</y>
      <width>391</width>
-     <height>131</height>
+     <height>151</height>
     </rect>
    </property>
    <property name="title">
@@ -165,8 +165,25 @@
       <x>90</x>
       <y>30</y>
       <width>291</width>
-      <height>91</height>
+      <height>111</height>
      </rect>
+    </property>
+   </widget>
+   <widget class="QCheckBox" name="cb_importGrps">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>110</y>
+      <width>70</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>import
+groups</string>
+    </property>
+    <property name="checked">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>

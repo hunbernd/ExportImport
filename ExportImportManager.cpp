@@ -5,7 +5,6 @@
 ExportImportManager::ExportImportManager(RsPeers* mPeers)
 {
     this->mPeers = mPeers;
-    this->import_groups = false;
 }
 
 std::string ExportImportManager::exportJson(){
@@ -21,7 +20,8 @@ std::string ExportImportManager::exportJson(){
     {
         Json::Value json_group;
         RsGroupInfo group_info= *list_iter;
-        json_group["id"] = group_info.id;
+		// use name as identitfier since IDs may change between instances
+		// json_group["id"] = group_info.id;
         json_group["name"] = group_info.name;
         json_group["flag"] = group_info.flag;
         Json::Value json_peer_ids;
@@ -80,7 +80,41 @@ std::string ExportImportManager::exportJson(){
     return writer.write(root);
 }
 
-void ExportImportManager::importData(const std::string &certFileStr)
+bool ExportImportManager::getGrpIdByName(const std::string &name, std::string &id)
+{
+	std::list<RsGroupInfo> grpList;
+	if(!mPeers->getGroupInfoList(grpList))
+		return false;
+
+	foreach (const RsGroupInfo &grp, grpList) {
+		if(grp.name == name) {
+			id = grp.id;
+			return true;
+		}
+	}
+
+	return false;
+}
+
+bool ExportImportManager::getGrp(const std::string &name, const Json::Value &flag, std::string &id)
+{
+	if(getGrpIdByName(name, id))
+		return true;
+
+	// -> create one
+	RsGroupInfo grp;
+	grp.id = "0"; // RS will generate an ID
+	grp.name = name;
+	grp.flag = flag.asUInt();
+
+	if(!mPeers->addGroup(grp))
+		return false;
+
+	// try again
+	return getGrpIdByName(name, id);
+}
+
+void ExportImportManager::importData(const std::string &certFileStr, bool import_groups)
 {
     Json::Value root;
     Json::Reader reader;
@@ -145,25 +179,21 @@ void ExportImportManager::importData(const std::string &certFileStr)
             RsPgpId gid(gpg_id["gpg_id"].asString());
             mPeers->trustGPGCertificate(gid, gpg_id["trustLvl"].asUInt());
         }
-        if(this->import_groups){
+		if(import_groups){
             Json::Value json_groups = root["groups"];
             foreach(const Json::Value& json_group, json_groups)
             {
-                std::string groupId = json_group["id"].asString();
-                Json::Value json_peers = json_group["peerIds"];
-                if (!groupId.empty()) {
-                    RsGroupInfo groupInfo;
-                    if(!mPeers->getGroupInfo(groupId, groupInfo)){
-                        groupInfo.id = json_group["id"].asString();
-                        groupInfo.name = json_group["name"].asString();
-                        groupInfo.flag = json_group["flag"].asUInt();
-                        mPeers->addGroup(groupInfo);
-                    }
-                    foreach(const Json::Value& json_peer, json_peers){
-                        RsPgpId pid(json_peer.asString());
-                        mPeers->assignPeerToGroup(groupId, pid, true);
-                    }
-                }
+				std::string groupId = ""; //json_group["id"].asString();
+				if(!getGrp(json_group["name"].asString(), json_group["flag"], groupId ))
+					// error - just skip
+					continue;
+
+				Json::Value json_peers = json_group["peerIds"];
+				foreach(const Json::Value& json_peer, json_peers){
+					RsPgpId pid(json_peer.asString());
+					mPeers->assignPeerToGroup(groupId, pid, true);
+				}
+
             }
         }
     }

@@ -68,7 +68,7 @@ void ExportImportPage::importKeys(){
                                      QString(tr("Certificate Load Failed:can't read from file %1 ")).arg(fn));
         } else {
             ExportImportManager importer(mPeers);
-            importer.importData(certFileStr);
+            importer.importData(certFileStr, ui.cb_importGrps->checkState() == Qt::Checked);
         }
     } else {
         QMessageBox::information(this,
@@ -106,7 +106,7 @@ void ExportImportPage::importKeysFromTxt()
 {
     ExportImportManager eip(mPeers);
     RsAutoUpdatePage::lockAllEvents();
-    eip.importData(ui.pte_text->toPlainText().toStdString());
+    eip.importData(ui.pte_text->toPlainText().toStdString(), ui.cb_importGrps->checkState() == Qt::Checked);
     RsAutoUpdatePage::unlockAllEvents();
     ui.pte_text->clear();
 }
