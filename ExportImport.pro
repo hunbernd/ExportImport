@@ -8,7 +8,8 @@ greaterThan(QT_MAJOR_VERSION, 4) {
 INCLUDEPATH += jsoncpp
 
 HEADERS += \
-    ExportImportManager.h \
+    ExportManager.h \
+    ImportManager.h \
     ExportImportPlugin.h \
     ExportImportPage.h \
     jsoncpp/json/json.h \
@@ -18,7 +19,8 @@ HEADERS -= upnp/upnputil.h
 SOURCES -= upnp/upnputil.c
 SOURCES += \
     jsoncpp/jsoncpp.cpp \
-    ExportImportManager.cpp \
+    ExportManager.cpp \
+    ImportManager.cpp \
     ExportImportPlugin.cpp \
     ExportImportPage.cpp
 

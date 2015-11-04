@@ -1,5 +1,6 @@
 #include "ExportImportPage.h"
-#include "ExportImportManager.h"
+#include "ExportManager.h"
+#include "ImportManager.h"
 #include "ui_ExportImportPage.h"
 #include "ExportImportPlugin.h"
 
@@ -34,7 +35,7 @@ void ExportImportPage::exportKeys(){
         QFile certFile(ui.exportFilenameLine->text());
         if (certFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
             QTextStream out(&certFile);
-            ExportImportManager exporter(mPeers);
+            ExportManager exporter(mPeers);
             out<<exporter.exportJson().c_str();
             certFile.close();
             QMessageBox::information(this,
@@ -67,7 +68,7 @@ void ExportImportPage::importKeys(){
                                      tr("RetroShare"),
                                      QString(tr("Certificate Load Failed:can't read from file %1 ")).arg(fn));
         } else {
-            ExportImportManager importer(mPeers);
+            ImportManager importer(mPeers);
             importer.importData(certFileStr, ui.cb_importGrps->checkState() == Qt::Checked);
         }
     } else {
@@ -98,13 +99,13 @@ void ExportImportPage::setExportFile()
 void ExportImportPage::exportKeysToTxt()
 {
     ui.pte_text->clear();
-    ExportImportManager eip(mPeers);
+    ExportManager eip(mPeers);
     ui.pte_text->appendPlainText(QString::fromUtf8(eip.exportJson().c_str()));
 }
 
 void ExportImportPage::importKeysFromTxt()
 {
-    ExportImportManager eip(mPeers);
+    ImportManager eip(mPeers);
     RsAutoUpdatePage::lockAllEvents();
     eip.importData(ui.pte_text->toPlainText().toStdString(), ui.cb_importGrps->checkState() == Qt::Checked);
     RsAutoUpdatePage::unlockAllEvents();

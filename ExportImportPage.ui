@@ -6,190 +6,153 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>416</width>
-    <height>318</height>
+    <width>381</width>
+    <height>327</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Dialog</string>
   </property>
-  <widget class="QGroupBox" name="groupBox_3">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>170</y>
-     <width>391</width>
-     <height>67</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Export</string>
-   </property>
-   <layout class="QGridLayout">
-    <item row="0" column="0">
-     <widget class="QLineEdit" name="exportFilenameLine">
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="2">
-     <widget class="QPushButton" name="exportDirButton">
-      <property name="minimumSize">
-       <size>
-        <width>31</width>
-        <height>31</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>31</width>
-        <height>31</height>
-       </size>
-      </property>
-      <property name="toolTip">
-       <string>Browse</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="../../retroshare-gui/src/gui/images.qrc">
-        <normaloff>:/images/directoryselect_24x24_shadow.png</normaloff>:/images/directoryselect_24x24_shadow.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="groupBox_4">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>240</y>
-     <width>391</width>
-     <height>67</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>Import</string>
-   </property>
-   <layout class="QGridLayout" name="_2">
-    <item row="0" column="2">
-     <widget class="QPushButton" name="importDirButton">
-      <property name="minimumSize">
-       <size>
-        <width>31</width>
-        <height>31</height>
-       </size>
-      </property>
-      <property name="maximumSize">
-       <size>
-        <width>31</width>
-        <height>31</height>
-       </size>
-      </property>
-      <property name="toolTip">
-       <string>Browse</string>
-      </property>
-      <property name="text">
-       <string/>
-      </property>
-      <property name="icon">
-       <iconset resource="../../retroshare-gui/src/gui/images.qrc">
-        <normaloff>:/images/directoryselect_24x24_shadow.png</normaloff>:/images/directoryselect_24x24_shadow.png</iconset>
-      </property>
-      <property name="iconSize">
-       <size>
-        <width>24</width>
-        <height>24</height>
-       </size>
-      </property>
-     </widget>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLineEdit" name="importFilepath">
-      <property name="readOnly">
-       <bool>true</bool>
-      </property>
-     </widget>
-    </item>
-   </layout>
-  </widget>
-  <widget class="QGroupBox" name="gb_textArea">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>391</width>
-     <height>151</height>
-    </rect>
-   </property>
-   <property name="title">
-    <string>copy and paste</string>
-   </property>
-   <widget class="QPushButton" name="pb_export">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>30</y>
-      <width>71</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>export</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pb_import">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>70</y>
-      <width>71</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>import</string>
-    </property>
-   </widget>
-   <widget class="QPlainTextEdit" name="pte_text">
-    <property name="geometry">
-     <rect>
-      <x>90</x>
-      <y>30</y>
-      <width>291</width>
-      <height>111</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QCheckBox" name="cb_importGrps">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>110</y>
-      <width>70</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>import
+  <layout class="QVBoxLayout" name="verticalLayout">
+   <item>
+    <widget class="QGroupBox" name="gb_textArea">
+     <property name="title">
+      <string>copy and paste</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <layout class="QVBoxLayout" name="verticalLayout_2">
+        <item>
+         <widget class="QPushButton" name="pb_export">
+          <property name="text">
+           <string>export</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QPushButton" name="pb_import">
+          <property name="text">
+           <string>import</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="cb_importGrps">
+          <property name="text">
+           <string>import
 groups</string>
-    </property>
-    <property name="checked">
-     <bool>true</bool>
-    </property>
-   </widget>
-  </widget>
+          </property>
+          <property name="checked">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPlainTextEdit" name="pte_text"/>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_3">
+     <property name="title">
+      <string>Export</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
+      <item>
+       <widget class="QLineEdit" name="exportFilenameLine">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="exportDirButton">
+        <property name="minimumSize">
+         <size>
+          <width>31</width>
+          <height>31</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>31</width>
+          <height>31</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Browse</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/images/directoryselect_24x24_shadow.png</normaloff>:/images/directoryselect_24x24_shadow.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="groupBox_4">
+     <property name="title">
+      <string>Import</string>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_3">
+      <item>
+       <widget class="QLineEdit" name="importFilepath">
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QPushButton" name="importDirButton">
+        <property name="minimumSize">
+         <size>
+          <width>31</width>
+          <height>31</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>31</width>
+          <height>31</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>Browse</string>
+        </property>
+        <property name="text">
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset>
+          <normaloff>:/images/directoryselect_24x24_shadow.png</normaloff>:/images/directoryselect_24x24_shadow.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
  </widget>
- <resources>
-  <include location="../../retroshare-gui/src/gui/images.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>
