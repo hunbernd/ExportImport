@@ -79,7 +79,7 @@ groups</string>
         <item>
          <widget class="QLineEdit" name="exportFilepath">
           <property name="readOnly">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
@@ -155,7 +155,7 @@ groups</string>
         <item>
          <widget class="QLineEdit" name="importFilepath">
           <property name="readOnly">
-           <bool>true</bool>
+           <bool>false</bool>
           </property>
          </widget>
         </item>
