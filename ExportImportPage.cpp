@@ -24,6 +24,9 @@ ExportImportPage::ExportImportPage(RsPeers* mPeers, QWidget* parent, Qt::WindowF
     connect(ui.importDirButton, SIGNAL(clicked()), this, SLOT(setImportFile()));
     connect(ui.exportDirButton, SIGNAL(clicked()), this, SLOT(setExportFile()));
 
+    connect(ui.importFromFileStart, SIGNAL(clicked()), this, SLOT(runImportFile()));
+    connect(ui.exportToFileStart, SIGNAL(clicked()), this, SLOT(runExportFile()));
+
     connect(ui.pb_export, SIGNAL(clicked()), this, SLOT(exportKeysToTxt()));
     connect(ui.pb_import, SIGNAL(clicked()), this, SLOT(importKeysFromTxt()));
 }
@@ -53,31 +56,25 @@ bool ExportImportPage::importGroups()
 /*!
  * \brief ExportImportPage::setExportFile
  *
- * Slot for the browse export file botton.  Opens a file dialog to export peers
- * to a selected file.
+ * Slot for the browse export file botton.  Opens a file browser to select a file
+ * and sets that file's path to the export path text box.
+ *
  */
 void ExportImportPage::setExportFile()
 {
     QString exportFile = QFileDialog::getSaveFileName(this, tr("Set Export File"));
-    ui.exportFilenameLine->setText(exportFile);
-
-    if(!exportFile.isEmpty())
-    {
-        exportKeysTo(exportFile);
-    }
+    ui.exportFilepath->setText(exportFile);
 }
 /*!
- * \brief ExportImportPage::exportKeys
+ * \brief ExportImportPage::runExportFile
  *
- * Method for the to a file.
+ * Slot for file export button.  Exports peer id data to the file in the export
+ * file name text box.
  */
-void ExportImportPage::exportKeysTo(const QString &filePath)
+void ExportImportPage::runExportFile()
 {
-    if(filePath.length() > 0) {
-        printExportsToFile(filePath);
-    } else {
-        displayMessage(QString(tr("Export failed, no filepath set")));
-    }
+    QString exportFile = ui.exportFilepath->text();
+    printExportsToFile(exportFile);
 }
 /*!
  * \brief ExportImportPage::printExportsToFile
@@ -89,7 +86,15 @@ void ExportImportPage::exportKeysTo(const QString &filePath)
 void ExportImportPage::printExportsToFile(const QString &filePath)
 {
     QFile certFile(filePath);
-    if (certFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+    if(filePath.isEmpty()) {
+
+        displayMessage(QString(tr("Export failed, no filepath set")));
+
+    } else if (!certFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
+
+        displayMessage(QString(tr("Export failed, file open failed!")));
+
+    } else {
 
         QTextStream out(&certFile);
         ExportManager exporter(mPeers);
@@ -99,72 +104,61 @@ void ExportImportPage::printExportsToFile(const QString &filePath)
 
         int exportCount = exporter.getExportCount();
         displayMessage(QString(tr("%1 keys exported!")).arg(exportCount));
-
-    } else {
-        displayMessage(QString(tr("Export failed, file open failed!")));
     }
 }
 /**************************** Importing ***************************************/
 /*!
  * \brief ExportImportPage::setImportFile
  *
- * Slot for the browse import file button.  Opens a file dialog to import peers
- * from a selected file.
+ * Slot for the browse import file button.  Opens a file dialog to select a file
+ * to import from and writes that file's path to the import file path text box.
  */
 void ExportImportPage::setImportFile()
 {
     QString importFile = QFileDialog::getOpenFileName(this, tr("Set Import File"));
     ui.importFilepath->setText(importFile);
-
-    if(!importFile.isEmpty())
-    {
-        importKeysFrom(importFile);
-    }
+}
+/*!
+ * \brief ExportImportPage::runImportFile
+ *
+ * Slot fo
+ */
+void ExportImportPage::runImportFile()
+{
+    QString importFile = ui.importFilepath->text();
+    importKeysFromFile(importFile);
 }
 /*!
  * \brief ExportImportPage::importKeys
  *
- * Method for importing keys from a file.
- */
-void ExportImportPage::importKeysFrom(const QString &filePath)
-{
-    if (QFile::exists(filePath)) {
-
-        QString jsonData = readImportFile(filePath);
-        if (!jsonData.isEmpty()) {
-
-            ImportManager importer(mPeers);
-            importer.importData(jsonData.toStdString(), importGroups());
-
-        } else {
-            displayMessage(QString(tr("Certificate Load Failed:can't read from file %1 ")).arg(filePath));
-        }
-
-    } else {
-        displayMessage(QString(tr("Certificate Load Failed:file %1 not found")).arg(filePath));
-    }
-}
-/*!
- * \brief ExportImportPage::readImportFile
+ * Imports keys from a given file path.
  *
- * Returns the contents of the file at filePath as a QString.  If the file
- * cannot be opened for any reason, an empty string is returned.  It really
- * should throw an error instead.
- *
- * \param filePath The file to read text from.
- * \return Contents of the file at filePath, or an empty string if it can't be
- * opened
+ * Will fail with a message to the user if the file path given is empty, does
+ * not exist, or cannot be opened for reading.
  */
-QString ExportImportPage::readImportFile(const QString &filePath)
+void ExportImportPage::importKeysFromFile(const QString &filePath)
 {
     QFile certFile(filePath);
-    if (certFile.open(QIODevice::ReadOnly | QIODevice::Text)){
+    if (filePath.isEmpty()) {
 
-        return QString(certFile.readAll());
+        displayMessage(QString(tr("Import failed, no filepath set")));
+
+    } else if (!QFile::exists(filePath)) {
+
+        displayMessage(QString(tr("Certificate Load Failed:file %1 not found")).arg(filePath));
+
+    } else if (!certFile.open(QIODevice::ReadOnly | QIODevice::Text)) {
+
+        displayMessage(QString(tr("Certificate Load Failed:can't read from file %1 ")).arg(filePath));
+
+    } else {
+
+        QString jsonData = QString(certFile.readAll());
         certFile.close();
 
-    } else { // TODO: Should really throw an error instead.
-        return QString("");
+        ImportManager importer(mPeers);
+        importer.importData(jsonData.toStdString(), importGroups());
+
     }
 }
 /************************* Copy Paste *****************************************/

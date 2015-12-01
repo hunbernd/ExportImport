@@ -23,6 +23,9 @@
  * \section DESCRIPTION
  *
  * \brief The ExportImportPage defines the UI behavior in Retroshare.
+ *
+ * The ExportImport UI has two methods of importing and exporting peers: reading
+ * and writing to json files, or copy and pasting json text in a text box.
  */
 class ExportImportPage : public MainPage
 {
@@ -73,17 +76,17 @@ private:
     bool importGroups();
     void displayMessage(const QString &msg);
     // exporting
-    void exportKeysTo(const QString &filePath);
     void printExportsToFile(const QString &filePath);
     // importing
-    void importKeysFrom(const QString &filePath);
-    QString readImportFile(const QString &filePath);
+    void importKeysFromFile(const QString &filePath);
     // ???
     ServicePermissionFlags serviceFlags() const;
 
 private slots:
     void setExportFile(); // browse export file button
     void setImportFile(); // browse import file button
+    void runExportFile(); // run export file button
+    void runImportFile(); // run import file button
     void exportKeysToTxt(); // export keys to copy-paste button
     void importKeysFromTxt(); // import keys to copy-paste button
 
