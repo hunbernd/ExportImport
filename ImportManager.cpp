@@ -110,7 +110,7 @@ void ImportManager::importGroups(const Json::Value &json_groups)
         foreach(const Json::Value& json_peer, json_peers)
         {
             RsPgpId pid(json_peer.asString());
-            mPeers->assignPeerToGroup(groupId, pid, true);
+			mPeers->assignPeerToGroup(RsNodeGroupId(groupId), pid, true);
         }
 
     }
@@ -125,7 +125,7 @@ bool ImportManager::getGrp(const std::string &name, const Json::Value &flag, std
 
 	// -> create one
 	RsGroupInfo grp;
-	grp.id = "0"; // RS will generate an ID
+	grp.id.clear(); // RS will generate an ID
 	grp.name = name;
 	grp.flag = flag.asUInt();
 
@@ -146,7 +146,7 @@ bool ImportManager::getGrpIdByName(const std::string &name, std::string &id)
 
 	foreach (const RsGroupInfo &grp, grpList) {
 		if(grp.name == name) {
-			id = grp.id;
+			id = grp.id.toStdString();
 			return true;
 		}
 	}
